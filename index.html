@@ -116,6 +116,7 @@ h1{background:linear-gradient(90deg,#2bffe0,#ff2bd6);-webkit-background-clip:tex
 <div class="row"><button id="signIn">Giriş yap</button><button id="signUp" class="secondary">Hesap oluştur</button></div><button id="signOut" class="secondary full">Çıkış yap</button><p id="authStatus" class="tiny">Henüz giriş yapılmadı.</p><button class="secondary full closeOverlay">Kapat</button></div></div>
 
 <div id="avatarPanel" class="overlay hidden"><div class="panel"><h2>Karakterini özelleştir</h2><p>Renkleri değiştir; bir görsel URL'si ekleyerek tişörtüne desen uygula. Şapka, kanat, gözlük ve evcil hayvan için mağazaya git 🛍️</p>
+<label class="tiny">Oyuncu adı (en fazla 14 karakter)<input id="nameInput" class="field" type="text" maxlength="14" placeholder="Adın"></label>
 <label class="tiny">Tişört rengi<input id="shirtColor" type="color" class="field" value="#3268df"></label>
 <label class="tiny">Pantolon rengi<input id="pantsColor" type="color" class="field" value="#29384a"></label>
 <label class="tiny">Saç rengi<input id="hairColor" type="color" class="field" value="#38251f"></label>
@@ -609,13 +610,13 @@ function houseKey(it){return Math.round(it.x)+'_'+Math.round(it.z)}
 function renderFurn(it){if(!it.furnG)return;while(it.furnG.children.length)it.furnG.remove(it.furnG.children[0]);const arr=profile.furn[houseKey(it)]||[];arr.forEach((f,i)=>{if(!FURN[f[0]])return;const m=makeFurn(f[0]);m.position.set(f[1],0,f[2]);m.rotation.y=f[3]*Math.PI/2;m.userData.fi=i;it.furnG.add(m)})}
 
 // ---------- profile ----------
-const DEF={coins:300,owned:[],hairStyle:0,face:0,outfit:0,furn:{},hat:0,back:0,glasses:0,pet:0,shirt:'#3268df',pants:'#29384a',hair:'#38251f',skin:'#ffd2a6',url:'',t:0};
+const DEF={coins:300,name:'',owned:[],hairStyle:0,face:0,outfit:0,furn:{},hat:0,back:0,glasses:0,pet:0,shirt:'#3268df',pants:'#29384a',hair:'#38251f',skin:'#ffd2a6',url:'',t:0};
 let profile=Object.assign({},DEF,{owned:[],furn:{}}),profileDirty=false,lastCloud=0;
 const hexOk=s=>typeof s==='string'&&/^#[0-9a-f]{6}$/i.test(s);
-function sanitize(a){const o=Object.assign({},DEF,{owned:[]});for(const k of['shirt','pants','hair','skin'])if(hexOk(a[k]))o[k]=a[k];for(const k of['hairStyle','face','outfit','hat','back','glasses','pet'])if(Number.isInteger(a[k])&&a[k]>=0&&a[k]<20)o[k]=a[k];if(Number.isFinite(a.coins))o.coins=Math.max(0,Math.floor(a.coins));if(typeof a.url==='string'&&a.url.length<400)o.url=a.url;if(Array.isArray(a.owned))o.owned=a.owned.filter(x=>typeof x==='string'&&x.length<16).slice(0,200);o.furn=cleanFurn(a.furn);o.t=Number.isFinite(a.t)?a.t:0;return o}
+function sanitize(a){const o=Object.assign({},DEF,{owned:[]});for(const k of['shirt','pants','hair','skin'])if(hexOk(a[k]))o[k]=a[k];for(const k of['hairStyle','face','outfit','hat','back','glasses','pet'])if(Number.isInteger(a[k])&&a[k]>=0&&a[k]<20)o[k]=a[k];if(Number.isFinite(a.coins))o.coins=Math.max(0,Math.floor(a.coins));if(typeof a.url==='string'&&a.url.length<400)o.url=a.url;if(Array.isArray(a.owned))o.owned=a.owned.filter(x=>typeof x==='string'&&x.length<16).slice(0,200);o.furn=cleanFurn(a.furn);o.name=typeof a.name==='string'?a.name.replace(/[<>\u0000-\u001f]/g,'').trim().slice(0,14):'';o.t=Number.isFinite(a.t)?a.t:0;return o}
 function profileLook(){return{shirt:profile.shirt,pants:profile.pants,hair:profile.hair,skin:profile.skin,url:profile.url,hairStyle:profile.hairStyle,face:profile.face,outfit:profile.outfit,hat:profile.hat,back:profile.back,glasses:profile.glasses,pet:profile.pet}}
-function refreshInputs(){$('shirtColor').value=profile.shirt;$('pantsColor').value=profile.pants;$('hairColor').value=profile.hair;$('skinColor').value=profile.skin;$('shirtUrl').value=profile.url||''}
-function applyProfile(a,force){if(!a||typeof a!=='object')return;const s=sanitize(a);if(!force&&s.t<profile.t)return;profile=s;refreshInputs();if(window.me)me.setLook(profileLook());updateCoinUI();lookDirty=true;houses.forEach(h=>{if(h.userPlaced&&h.furnG)renderFurn(h)})}
+function refreshInputs(){$('shirtColor').value=profile.shirt;$('pantsColor').value=profile.pants;$('hairColor').value=profile.hair;$('skinColor').value=profile.skin;$('shirtUrl').value=profile.url||'';$('nameInput').value=profile.name||''}
+function applyProfile(a,force){if(!a||typeof a!=='object')return;const s=sanitize(a);if(!force&&s.t<profile.t)return;profile=s;refreshInputs();if(window.me){me.setLook(profileLook());me.setName(myName())}updateCoinUI();lookDirty=true;houses.forEach(h=>{if(h.userPlaced&&h.furnG)renderFurn(h)})}
 function saveLocal(){try{localStorage.setItem('bvAvatar',JSON.stringify(profile))}catch(e){}}
 function markDirty(){profileDirty=true;profile.t=Date.now();saveLocal()}
 let lookDirty=true;
@@ -626,7 +627,7 @@ let toastT=0;function toast(m){const t=$('toast');t.textContent=m;t.classList.ad
 // ---------- actors in world ----------
 const guestId=(()=>{let g=null;try{g=localStorage.getItem('bvGuest')}catch(e){}if(!g){g='g'+Math.random().toString(36).slice(2,10);try{localStorage.setItem('bvGuest',g)}catch(e){}}return g})();
 const myId=()=>user?user.id:guestId;
-const myName=()=>user?(user.email||'Oyuncu').split('@')[0].slice(0,14):'Misafir'+guestId.slice(-3).toUpperCase();
+const myName=()=>profile.name?profile.name:user?(user.email||'Oyuncu').split('@')[0].slice(0,14):'Misafir'+guestId.slice(-3).toUpperCase();
 const me=window.me=makeActor(profileLook(),myName());me.root.position.set(0,0,76);updateCoinUI();
 const PHR=['Merhaba! 👋','Bu şehir çok güzel!','Altınları topladın mı?','Gökyüzü adasına gittin mi?','Trambolin harika!','Mağazada yeni şapkalar var!','Dans edelim mi? 💃','Çarkı çevirdin mi?','Ördekler çok tatlı 🦆','Dönme dolaba binelim!'];
 const NN=['Pixel','Mila','Cem','Luna','Bulut','Zeynep','Maxi','Şeker','Pamuk'],CP=['#ff5c8a','#ffd93b','#45e6d0','#7b3fe4','#ff9f43','#4dabf7','#51cf66','#ff4fa3'];
@@ -709,7 +710,7 @@ const PLACES=[['🏠 Giriş',0,0,76],['🌆 Neon bölgesi',200,0,-182],['⛲ Par
 function renderMap(){$('mapList').innerHTML=PLACES.map((p,i)=>`<button class="secondary place" data-p="${i}">${p[0]}</button>`).join('')}
 $('mapList').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b)return;const p=PLACES[+b.dataset.p];me.root.position.set(p[1],p[2],p[3]);P.vy=0;if(me.pet)me.pet.position.set(p[1],p[2],p[3]-2);closePanels();updateControlUI();sfx(700,.2,'sine',1400)});
 // avatar
-$('saveAvatar').onclick=async()=>{profile.shirt=$('shirtColor').value;profile.pants=$('pantsColor').value;profile.hair=$('hairColor').value;profile.skin=$('skinColor').value;profile.url=$('shirtUrl').value.trim();markDirty();me.setLook(profileLook());lookDirty=true;$('avatarStatus').textContent=user?'Kaydediliyor…':'Bu cihaza kaydedildi. Diğer cihazlara eşitlemek için giriş yap.';if(user)await syncCloudState()};
+$('saveAvatar').onclick=async()=>{profile.shirt=$('shirtColor').value;profile.pants=$('pantsColor').value;profile.hair=$('hairColor').value;profile.skin=$('skinColor').value;profile.url=$('shirtUrl').value.trim();profile.name=$('nameInput').value.replace(/[<>\u0000-\u001f]/g,'').trim().slice(0,14);me.setName(myName());if(channel)channel.track({online_at:new Date().toISOString(),name:myName()}).catch(()=>{});markDirty();me.setLook(profileLook());lookDirty=true;$('avatarStatus').textContent=user?'Kaydediliyor…':'Bu cihaza kaydedildi. Diğer cihazlara eşitlemek için giriş yap.';if(user)await syncCloudState()};
 // chat
 function openChat(){$('chatBar').classList.remove('hidden');$('emoteBar').classList.add('hidden');for(const k in keys)keys[k]=false;setTimeout(()=>$('chatInput').focus(),30)}
 function closeChat(){$('chatBar').classList.add('hidden');$('chatInput').blur();$('chatInput').value=''}
