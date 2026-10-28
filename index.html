@@ -124,6 +124,24 @@ h1{background:linear-gradient(90deg,#2bffe0,#ff2bd6);-webkit-background-clip:tex
 <label class="tiny">Tişört deseni görsel URL'si (isteğe bağlı)<input id="shirtUrl" class="field" type="url" placeholder="https://.../gorsel.png"></label>
 <div class="row"><button id="saveAvatar">Uygula ve kaydet</button><button class="secondary closeOverlay">Kapat</button></div><p id="avatarStatus" class="tiny">Giriş yaptıysan görünüm buluta da kaydedilir; giriş yapmadıysan bu cihazda saklanır.</p></div></div>
 
+<div id="friendsPanel" class="overlay hidden"><div class="panel"><h2>👥 Arkadaşlar</h2>
+<div class="setting"><input id="friendCode" class="field" placeholder="Arkadaş kodunu gir (6 hane)"><button id="sendFriendCode" class="secondary">Kodla davet et</button></div>
+<div id="friendsList" class="grid" style="grid-template-columns:1fr;gap:8px;margin:12px 0"></div>
+<button id="copyMyCode" class="secondary full">Benim kodumu kopyala</button>
+<button class="secondary closeOverlay full">Kapat</button></div></div>
+<div id="bodyPartsPanel" class="overlay hidden"><div class="panel"><h2>Vücüt Parçaları</h2>
+<p>Hangi parçaları gizle:</p>
+<div class="grid" id="bodyPartsGrid" style="grid-template-columns:repeat(2,1fr)">
+<div class="item" data-part="left_leg"><div class="em">🦵</div>Sol bacak</div>
+<div class="item" data-part="right_leg"><div class="em">🦵</div>Sağ bacak</div>
+<div class="item" data-part="left_arm"><div class="em">💪</div>Sol kol</div>
+<div class="item" data-part="right_arm"><div class="em">💪</div>Sağ kol</div>
+<div class="item" data-part="head"><div class="em">🧠</div>Baş</div>
+<div class="item" data-part="torso"><div class="em">🫀</div>Gövde</div>
+</div>
+<div class="actions"><button id="resetBody">Sıfırla</button><button class="secondary closeOverlay">Kapat</button></div>
+</div></div>
+
 <div id="buildPanel" class="overlay hidden"><div class="panel"><h2>Ev yerleştirme</h2><p>Bir ev satın al (yerleştirirken altın düşer), sonra yollardan ve parktan uzak boş bir parsele tıkla. Kendi evinin içindeyken 🛋️ düğmesiyle mobilya diz. Yeşil gölge yerleştirilebilir, kırmızı yerleştirilemez demektir.</p>
 <select id="houseType" class="full"><option value="small">Küçük ev — 150 🪙</option><option value="cabin">Ahşap ev — 250 🪙</option><option value="modern">Modern ev — 400 🪙</option><option value="neon">Neon ev — 500 🪙</option><option value="villa">Villa — 900 🪙</option></select>
 <div class="actions"><button id="buildMode">Yerleştirme modunu aç</button><button class="secondary closeOverlay">Kapat</button></div><p id="buildStatus" class="tiny">Yerleştirme modu kapalı.</p></div></div>
@@ -146,7 +164,7 @@ h1{background:linear-gradient(90deg,#2bffe0,#ff2bd6);-webkit-background-clip:tex
 <div id="help" class="glass"></div>
 </div>
 <div id="toolbar">
-<button id="btnShop" title="Mağaza">🛍️</button><button id="btnMap" title="Işınlan">🗺️</button><button id="btnEmote" title="Emojiler">😀</button><button id="btnChat" title="Sohbet">💬</button><button id="btnBuild" title="Ev yerleştir">🏠</button><button id="btnVoice" title="Sesli sohbet (M)">🎤</button><button id="btnFurn" class="hidden" title="Mobilya">🛋️</button><button id="btnMenu" class="secondary" title="Menü">⚙️</button>
+<button id="btnShop" title="Mağaza">🛍️</button><button id="btnMap" title="Işınlan">🗺️</button><button id="btnEmote" title="Emojiler">😀</button><button id="btnChat" title="Sohbet">💬</button><button id="btnBuild" title="Ev yerleştir">🏠</button><button id="btnVoice" title="Sesli sohbet (M)">🎤</button><button id="btnFriends" title="Arkadaşlar">👥</button><button id="btnParts" title="Vücüt">💀</button><button id="btnFurn" class="hidden" title="Mobilya">🛋️</button><button id="btnMenu" class="secondary" title="Menü">⚙️</button>
 </div>
 <div id="interact" class="hidden"><button id="interactBtn">E</button></div>
 <div id="chatBar" class="hidden"><input id="chatInput" maxlength="60" placeholder="Mesaj yaz…" autocomplete="off"><button id="chatSend">Gönder</button></div>
@@ -163,12 +181,15 @@ if(!window.THREE){$('stats').textContent='Three.js yüklenemedi. İnternet bağl
 const MU=THREE.MathUtils;
 const SUPABASE_URL='https://kphdxpscsjbjtdtstlow.supabase.co';
 const SUPABASE_KEY='sb_publishable_2eoVbj4Eg-V5KZIBQv1IYA_LuTcKcDy';
+
+
 let sb=null,user=null,channel=null;
 try{if(window.supabase?.createClient)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){console.warn('Supabase başlatılamadı',e)}
 
 // ---------- state ----------
 let controlMode='pc',started=false,menuOpen=false,buildMode=false,insideHouse=null,yaw=0,pitch=.22,camDist=8.5,dragging=false,lastX=0,lastY=0;
 const keys={};let quality='medium',rtx=false,shadows=true,viewDistance=160,dayCycle=true,dayTime=.05,dayF=1;
+const hiddenParts=new Set();
 const P={vy:0,onGround:true};
 const colliders=[],houses=[],footprints=[],cullables=[],interactables=[],platforms=[],pads=[],coins=[],floaters=[],animated=[],treeSpecs=[],flowerSpots=[],mapMarks=[],neonMats=[],towerMats=[],cars=[],actorSet=new Set(),npcs=[],remotes=new Map();
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -498,7 +519,7 @@ function makeActor(look,name){
  const hatA=new THREE.Group();hatA.position.set(0,.52,0);head.add(hatA);const glA=new THREE.Group();glA.position.set(0,.17,.44);head.add(glA);const backA=new THREE.Group();backA.position.set(0,1.0,-.24);body.add(backA);
  const c={root,pivot,body,legL,legR,armL,armR,head,eyes:null,mats,hairA,faceA,outfitObjs:[],hatA,glA,backA,look:{},emote:null,emoteStart:0,wings:null,cape:null,pet:null,petType:0,blink:Math.random()*3000,nextFloat:0,bubble:null,bubbleUntil:0,label:null,name:''};
  const clear=gr=>{while(gr.children.length)gr.remove(gr.children[0])};
- c.setLook=l=>{const L=c.look;if(L.hairStyle===undefined)l=Object.assign({hairStyle:0,face:0,outfit:0,hat:0,glasses:0,back:0,pet:0},l);for(const k of['skin','shirt','pants','hair']){if(l[k]&&l[k]!==L[k]){mats[k].color.set(l[k]);L[k]=l[k]}}
+ c.setLook=l=>{const L=c.look;if(L.hairStyle===undefined)l=Object.assign({hairStyle:0,face:0,outfit:0,hat:0,glasses:0,back:0,pet:0,hiddenParts:{}},l);for(const k of['skin','shirt','pants','hair']){if(l[k]&&l[k]!==L[k]){mats[k].color.set(l[k]);L[k]=l[k]}}
   if(l.url!==undefined&&l.url!==L.url){L.url=l.url;if(!l.url){mats.shirt.map=null;mats.shirt.needsUpdate=true}else if(/^https?:\/\//i.test(l.url)){const ld=new THREE.TextureLoader();ld.crossOrigin='anonymous';ld.load(l.url,t=>{t.colorSpace=THREE.SRGBColorSpace;mats.shirt.map=t;mats.shirt.needsUpdate=true;if(c===me)$('avatarStatus').textContent='Görsel yüklendi.'},undefined,()=>{if(c===me)$('avatarStatus').textContent='Görsel yüklenemedi; doğrudan görsel bağlantısı deneyin.'})}}
   if(l.hairStyle!==undefined&&l.hairStyle!==L.hairStyle){clear(hairA);hairA.add(makeHair(l.hairStyle,mats.hair));L.hairStyle=l.hairStyle}
   if(l.face!==undefined&&l.face!==L.face){clear(faceA);const f=makeFace(l.face);faceA.add(f.g);c.eyes=f.eyes;L.face=l.face}
@@ -506,7 +527,8 @@ function makeActor(look,name){
   if(l.hat!==undefined&&l.hat!==L.hat){clear(hatA);const h=makeHat(l.hat);if(h)hatA.add(h);L.hat=l.hat}
   if(l.glasses!==undefined&&l.glasses!==L.glasses){clear(glA);const gl=makeGlasses(l.glasses);if(gl)glA.add(gl);L.glasses=l.glasses}
   if(l.back!==undefined&&l.back!==L.back){clear(backA);c.wings=c.cape=null;const b=makeBack(l.back);backA.add(b.g);c.wings=b.wings;c.cape=b.cape;L.back=l.back}
-  if(l.pet!==undefined&&l.pet!==L.pet){if(c.pet){scene.remove(c.pet);c.pet=null}const p=makePet(l.pet);if(p){p.position.copy(root.position);scene.add(p);c.pet=p}L.pet=l.pet}};
+  if(l.pet!==undefined&&l.pet!==L.pet){if(c.pet){scene.remove(c.pet);c.pet=null}const p=makePet(l.pet);if(p){p.position.copy(root.position);scene.add(p);c.pet=p}L.pet=l.pet}
+  if(l.hiddenParts!==undefined&&l.hiddenParts!==L.hiddenParts){body.visible=!l.hiddenParts.torso;legL.visible=!l.hiddenParts.left_leg;legR.visible=!l.hiddenParts.right_leg;armL.visible=!l.hiddenParts.left_arm;armR.visible=!l.hiddenParts.right_arm;head.visible=!l.hiddenParts.head;L.hiddenParts=l.hiddenParts}};
  c.setName=n=>{if(n===c.name)return;c.name=n;disposeSprite(c.label);c.label=textSprite(n,{fs:30,scale:.0095});c.label.position.set(0,2.75,0);root.add(c.label)};
  c.setLook(look||{});c.setName(name||'Oyuncu');scene.add(root);actorSet.add(c);return c}
 function removeActor(a){scene.remove(a.root);if(a.pet)scene.remove(a.pet);disposeSprite(a.label);disposeSprite(a.bubble);actorSet.delete(a)}
@@ -532,12 +554,12 @@ function animActor(c,now,moving,running,air){let ll=0,lr=0,al=0,ar=0,alz=-.1,arz
  if(c.cape)c.cape.rotation.x=.1+(moving?.45:0)+Math.sin(now*.01)*.05+(air?.3:0)}
 function updatePet(c,dt,now,moving){const p=c.pet;if(!p)return;const r=c.root,ry=r.rotation.y,tx=r.position.x-Math.sin(ry)*1.8+Math.cos(ry)*.9,tz=r.position.z-Math.cos(ry)*1.8-Math.sin(ry)*.9,dx=tx-p.position.x,dz=tz-p.position.z,dist=Math.hypot(dx,dz);
  if(dist>14){p.position.set(tx,r.position.y,tz)}else if(dist>.25){const sp=Math.min(dist*3,9)*dt;p.position.x+=dx/dist*sp;p.position.z+=dz/dist*sp;p.rotation.y=lerpAngle(p.rotation.y,Math.atan2(dx,dz),Math.min(1,dt*8))}
- p.position.y+=(r.position.y-p.position.y)*Math.min(1,dt*10)+(dist>.4?Math.abs(Math.sin(now*.016))*.02:0);p.visible=r.visible}
+ const pground=floorAt(p.position.x,p.position.z);p.position.y+=(pground+.5-p.position.y)*Math.min(1,dt*15)+(dist>.4?Math.abs(Math.sin(now*.016))*.02:0);p.visible=r.visible}
 function lerpAngle(a,b,t){const d=((b-a+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;return a+d*t}
 
 const CAPG=new THREE.SphereGeometry(.485,20,14,0,Math.PI*2,0,1.7);
 function makeHair(id,hm){const g=new THREE.Group(),H=(geo,x,y,z,sx,sy,sz,rx,rz)=>{const o=new THREE.Mesh(geo,hm);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.rotation.set(rx||0,0,rz||0);o.castShadow=true;g.add(o);return o};
- const cap=()=>H(CAPG,0,.15,-.015,1,1,1),bangs=()=>{for(const s of[-1,1])H(G.sph,s*.14,.4,.34,.2,.11,.1);H(G.sph,0,.43,.36,.17,.1,.09)},sides=()=>{for(const s of[-1,1])H(G.sph,s*.43,.08,-.05,.08,.2,.18)};
+ const cap=()=>H(CAPG,0,.35,-.015,1,1,1),bangs=()=>{for(const s of[-1,1])H(G.sph,s*.14,.4,.34,.2,.11,.1);H(G.sph,0,.43,.36,.17,.1,.09)},sides=()=>{for(const s of[-1,1])H(G.sph,s*.43,.08,-.05,.08,.2,.18)};
  switch(id){
  case 1:cap();sides();H(G.sph,.17,.3,.4,.3,.3,.09,0,-.5);H(G.sph,.24,.1,.41,.14,.3,.07,0,-.15);H(G.sph,-.2,.38,.38,.2,.1,.1);for(const s of[-1,1])H(G.sph,s*.42,-.1,-.08,.1,.34,.26);H(G.sph,0,-.1,-.36,.38,.4,.14);break;
  case 2:cap();bangs();sides();H(G.sph,0,-.12,-.3,.5,.72,.2);for(const s of[-1,1])H(G.sph,s*.44,-.1,-.05,.1,.5,.25);break;
@@ -610,11 +632,23 @@ function houseKey(it){return Math.round(it.x)+'_'+Math.round(it.z)}
 function renderFurn(it){if(!it.furnG)return;while(it.furnG.children.length)it.furnG.remove(it.furnG.children[0]);const arr=profile.furn[houseKey(it)]||[];arr.forEach((f,i)=>{if(!FURN[f[0]])return;const m=makeFurn(f[0]);m.position.set(f[1],0,f[2]);m.rotation.y=f[3]*Math.PI/2;m.userData.fi=i;it.furnG.add(m)})}
 
 // ---------- profile ----------
+// ---------- expanded shop ----------
+const SHOP_ITEMS={
+  hair:[{id:'h0',emoji:'💇',name:'Classic',cost:0},{id:'h1',emoji:'👱',name:'Blonde',cost:100},{id:'h2',emoji:'🧑‍🦱',name:'Red',cost:120},{id:'h3',emoji:'🧔',name:'Beard',cost:150},{id:'h4',emoji:'👴',name:'Gray',cost:180},{id:'h5',emoji:'💈',name:'Emo',cost:200},{id:'h6',emoji:'🎸',name:'Spiky',cost:250}],
+  faces:[{id:'f0',emoji:'😊',name:'Happy',cost:0},{id:'f1',emoji:'😎',name:'Cool',cost:100},{id:'f2',emoji:'😢',name:'Sad',cost:120},{id:'f3',emoji:'😤',name:'Angry',cost:150},{id:'f4',emoji:'🥸',name:'Sus',cost:180},{id:'f5',emoji:'🤖',name:'Robot',cost:300}],
+  pets:[{id:'p0',emoji:'🐕',name:'Dog',cost:200},{id:'p1',emoji:'🐱',name:'Cat',cost:200},{id:'p2',emoji:'🦜',name:'Parrot',cost:250},{id:'p3',emoji:'🐢',name:'Turtle',cost:250},{id:'p4',emoji:'🦊',name:'Fox',cost:300},{id:'p5',emoji:'🐉',name:'Dragon',cost:500},{id:'p6',emoji:'🦄',name:'Unicorn',cost:400}],
+  hats:[{id:'hat0',emoji:'🎩',name:'Top Hat',cost:150},{id:'hat1',emoji:'🧢',name:'Cap',cost:100},{id:'hat2',emoji:'👑',name:'Crown',cost:300},{id:'hat3',emoji:'🎓',name:'Graduate',cost:200},{id:'hat4',emoji:'⛑️',name:'Helmet',cost:180},{id:'hat5',emoji:'🎭',name:'Mask',cost:250}],
+  accessories:[{id:'acc0',emoji:'😎',name:'Sunglasses',cost:120},{id:'acc1',emoji:'🥽',name:'Goggles',cost:150},{id:'acc2',emoji:'🔗',name:'Chain',cost:200},{id:'acc3',emoji:'💍',name:'Ring',cost:180},{id:'acc4',emoji:'⌚',name:'Watch',cost:160}],
+  furniture:[{id:'f_sofa',emoji:'🛋️',name:'Sofa',cost:300},{id:'f_bed',emoji:'🛏️',name:'Bed',cost:250},{id:'f_lamp',emoji:'💡',name:'Lamp',cost:80},{id:'f_plant',emoji:'🌿',name:'Plant',cost:60},{id:'f_desk',emoji:'🚪',name:'Desk',cost:200},{id:'f_rug',emoji:'🧵',name:'Rug',cost:120},{id:'f_pc',emoji:'💻',name:'PC',cost:400},{id:'f_poster',emoji:'🎨',name:'Poster',cost:100}],
+  outfits:[{id:'o0',emoji:'👔',name:'Suit',cost:250},{id:'o1',emoji:'👗',name:'Dress',cost:250},{id:'o2',emoji:'🥾',name:'Casual',cost:150},{id:'o3',emoji:'👚',name:'T-shirt',cost:100},{id:'o4',emoji:'🎽',name:'Hoodie',cost:180},{id:'o5',emoji:'🎽',name:'Gamer',cost:220}],
+  backs:[{id:'b0',emoji:'👻',name:'Ghost',cost:100},{id:'b1',emoji:'🦇',name:'Wings',cost:150},{id:'b2',emoji:'⚫',name:'Shadow',cost:200},{id:'b3',emoji:'💥',name:'Aura',cost:250}]
+};
+
 const DEF={coins:300,name:'',owned:[],hairStyle:0,face:0,outfit:0,furn:{},hat:0,back:0,glasses:0,pet:0,shirt:'#3268df',pants:'#29384a',hair:'#38251f',skin:'#ffd2a6',url:'',t:0};
 let profile=Object.assign({},DEF,{owned:[],furn:{}}),profileDirty=false,lastCloud=0;
 const hexOk=s=>typeof s==='string'&&/^#[0-9a-f]{6}$/i.test(s);
 function sanitize(a){const o=Object.assign({},DEF,{owned:[]});for(const k of['shirt','pants','hair','skin'])if(hexOk(a[k]))o[k]=a[k];for(const k of['hairStyle','face','outfit','hat','back','glasses','pet'])if(Number.isInteger(a[k])&&a[k]>=0&&a[k]<20)o[k]=a[k];if(Number.isFinite(a.coins))o.coins=Math.max(0,Math.floor(a.coins));if(typeof a.url==='string'&&a.url.length<400)o.url=a.url;if(Array.isArray(a.owned))o.owned=a.owned.filter(x=>typeof x==='string'&&x.length<16).slice(0,200);o.furn=cleanFurn(a.furn);o.name=typeof a.name==='string'?a.name.replace(/[<>\u0000-\u001f]/g,'').trim().slice(0,14):'';o.t=Number.isFinite(a.t)?a.t:0;return o}
-function profileLook(){return{shirt:profile.shirt,pants:profile.pants,hair:profile.hair,skin:profile.skin,url:profile.url,hairStyle:profile.hairStyle,face:profile.face,outfit:profile.outfit,hat:profile.hat,back:profile.back,glasses:profile.glasses,pet:profile.pet}}
+function profileLook(){return{shirt:profile.shirt,pants:profile.pants,hair:profile.hair,skin:profile.skin,url:profile.url,hairStyle:profile.hairStyle,face:profile.face,outfit:profile.outfit,hat:profile.hat,back:profile.back,glasses:profile.glasses,pet:profile.pet,hiddenParts:profile.hiddenParts||{}}}
 function refreshInputs(){$('shirtColor').value=profile.shirt;$('pantsColor').value=profile.pants;$('hairColor').value=profile.hair;$('skinColor').value=profile.skin;$('shirtUrl').value=profile.url||'';$('nameInput').value=profile.name||''}
 function applyProfile(a,force){if(!a||typeof a!=='object')return;const s=sanitize(a);if(!force&&s.t<profile.t)return;profile=s;refreshInputs();if(window.me){me.setLook(profileLook());me.setName(myName())}updateCoinUI();lookDirty=true;houses.forEach(h=>{if(h.userPlaced&&h.furnG)renderFurn(h)})}
 function saveLocal(){try{localStorage.setItem('bvAvatar',JSON.stringify(profile))}catch(e){}}
@@ -725,6 +759,12 @@ $('interactBtn').onclick=runInteract;
 $('phoneControls').onchange=updateControlUI;
 ['quality','bvRTX','sunShadows','viewDistance','timeMode'].forEach(id=>$(id).addEventListener('change',applySettings));
 $('defaults').onclick=()=>{$('quality').value='medium';$('bvRTX').checked=false;$('sunShadows').checked=true;$('timeMode').value='auto';$('musicTrack').value='auto';trackSel='auto';$('viewDistance').value='160';$('phoneControls').checked=controlMode!=='pc';$('musicVolume').value=25;$('sfxVolume').value=60;applySettings();updateControlUI()};
+// friends & body parts listeners
+$('btnFriends').onclick=()=>openPanel('friendsPanel');
+$('btnParts').onclick=()=>openPanel('bodyPartsPanel');
+$('copyMyCode').onclick=()=>{const code=myId().slice(0,6).toUpperCase();navigator.clipboard.writeText(code);toast('Kod kopyalandı: '+code)};
+const bodyPartsGrid=$('bodyPartsGrid');if(bodyPartsGrid)bodyPartsGrid.addEventListener('click',e=>{const item=e.target.closest('.item');if(!item)return;const part=item.dataset.part;if(hiddenParts.has(part)){hiddenParts.delete(part);item.classList.remove('eq')}else{hiddenParts.add(part);item.classList.add('eq')}profile.hiddenParts=Object.fromEntries([...hiddenParts].map(p=>[p,true]));me.setLook(profileLook());lookDirty=true;markDirty()});
+$('resetBody').onclick=()=>{hiddenParts.clear();profile.hiddenParts={};document.querySelectorAll('#bodyPartsGrid .item').forEach(x=>x.classList.remove('eq'));me.setLook(profileLook());lookDirty=true;markDirty()};
 function applySettings(){quality=$('quality').value;rtx=$('bvRTX').checked;shadows=$('sunShadows').checked;viewDistance=+$('viewDistance').value;{const tm=$('timeMode').value;dayCycle=tm==='auto';if(tm==='day')dayTime=.194;else if(tm==='evening')dayTime=.055;else if(tm==='night')dayTime=.877}
  const dpr=quality==='low'?Math.min(devicePixelRatio||1,1.15):quality==='medium'?Math.min(devicePixelRatio||1,1.75):Math.min(devicePixelRatio||1,2.5);
  renderer.setPixelRatio(dpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=shadows;renderer.shadowMap.type=THREE.PCFSoftShadowMap;sunLight.castShadow=shadows;
