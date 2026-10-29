@@ -59,16 +59,52 @@ input[type=color].field{height:44px;padding:3px}
 .item{background:#ffffff1f;border:2px solid #ffffff33;border-radius:14px;padding:8px 4px;text-align:center;cursor:pointer;font-size:12px}
 .item .em{font-size:32px;display:block}.item.eq{border-color:var(--cy);background:#2bd6a455}
 .place{width:100%;text-align:left;margin-top:8px}
-#mobileControls{position:fixed;z-index:4;left:15px;bottom:24px;width:178px;display:none;grid-template-columns:repeat(3,54px);gap:5px}
-#mobileControls button{height:52px;background:#2f1a6fcc;color:#fff;border:2px solid #ffffff66;padding:4px;touch-action:none;box-shadow:none}
-#mobileControls button[data-key="Space"]{grid-column:1/3;width:100%;height:40px;background:#e8a900;color:#3a2000}
-#mobileControls button[data-key="Dance"]{grid-column:3;height:40px;background:#c2358a}
-#lookHint{position:fixed;right:76px;bottom:24px;z-index:3;background:#1b0f4baa;padding:8px;border-radius:9px;font-size:11px;display:none;max-width:150px}
-body.touch #chatLog{bottom:200px}body.touch #help{display:none}body.touch #interact{bottom:150px}body.touch #chatBar{bottom:20px}
+/* Roblox-style touch controls */
+#mobileControls{display:none!important}
+#joystickContainer{position:fixed;left:18px;bottom:28px;width:150px;height:150px;background:rgba(255,255,255,0.12);border-radius:50%;border:3px solid rgba(255,255,255,0.35);display:none;z-index:4;touch-action:none;box-shadow:0 4px 16px #0005}
+#joystickInner{position:absolute;width:70px;height:70px;background:rgba(255,255,255,0.35);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);border:3px solid rgba(255,255,255,0.7);box-shadow:0 2px 8px #0004;pointer-events:none}
+#mobileButtonsRight{position:fixed;right:14px;bottom:28px;display:none;flex-direction:column;align-items:center;gap:12px;z-index:4}
+#mobileButtonsRight button{width:72px;height:72px;border-radius:50%;border:none;font-weight:700;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;display:flex;align-items:center;justify-content:center;flex-direction:column;line-height:1.1;box-shadow:0 5px 0 #0005,0 8px 14px #0004;transition:transform .08s,box-shadow .08s}
+#mobileButtonsRight button:active{transform:translateY(3px);box-shadow:0 2px 0 #0005,0 4px 8px #0004}
+#mobileJump{background:linear-gradient(#ffe45e,#ffc42e);color:#3a2000;font-size:13px;box-shadow:0 5px 0 #c28a00,0 8px 14px #0004!important}
+#mobileJump:active{box-shadow:0 2px 0 #c28a00,0 4px 8px #0004!important}
+#mobileRun{background:linear-gradient(#ff6b9d,#c2358a);color:#fff;font-size:12px;box-shadow:0 5px 0 #7a1555,0 8px 14px #0004!important}
+#mobileRun:active{box-shadow:0 2px 0 #7a1555,0 4px 8px #0004!important}
+#mobileRun.active{background:linear-gradient(#5dff9a,#1fc96a);box-shadow:0 5px 0 #0a7a3c,0 8px 14px #0004!important;color:#06361b}
+#mobileEmote{background:linear-gradient(#9b6bff,#7b3fe4);color:#fff;font-size:22px;width:60px!important;height:60px!important;box-shadow:0 5px 0 #4d238f,0 8px 14px #0004!important}
+#mobileEmote:active{box-shadow:0 2px 0 #4d238f,0 4px 8px #0004!important}
+#lookHint{position:fixed;right:14px;bottom:280px;z-index:3;background:#1b0f4baa;padding:8px 12px;border-radius:12px;font-size:12px;display:none;max-width:140px;text-align:center;pointer-events:none}
+body.touch #chatLog{bottom:195px;left:12px;width:min(260px,50vw);max-height:120px;overflow:hidden}
+body.touch #help{display:none}
+body.touch #interact{bottom:195px}
+body.touch #chatBar{bottom:12px}
+body.touch #toolbar{
+  right:14px;top:auto;bottom:248px;transform:none;
+  flex-direction:column;flex-wrap:nowrap;gap:6px;
+  max-width:48px;align-items:center;
+}
+body.touch #toolbar button{width:42px;height:42px;font-size:17px;border-radius:50%}
+body.touch #emoteBar{bottom:195px;max-width:92vw}
+body.touch #lookHint{bottom:252px;right:68px}
+body.touch #mobileButtonsRight{bottom:18px;right:12px;gap:10px}
+body.touch #joystickContainer{bottom:18px;left:12px}
 @media(max-width:650px){#help{white-space:normal;width:96%;text-align:center}.panel{padding:18px}h1{font-size:40px}}
 #furnBar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:7;padding:8px;max-width:96vw;display:flex;gap:8px;align-items:center}
 #furnItems{display:flex;gap:6px;overflow-x:auto;max-width:68vw}#furnItems .item{min-width:78px;flex:none}#furnBar .fbtns{display:flex;gap:6px}#furnBar .fbtns button{padding:8px 12px}
 #btnVoice.live{background:linear-gradient(#5dff9a,#1fc96a);box-shadow:0 4px 0 #0a7a3c,0 6px 10px #0004;color:#06361b}
+#bagPanel{position:fixed;right:70px;top:50%;transform:translateY(-50%);z-index:8;width:min(280px,72vw);max-height:min(420px,70vh);display:none;flex-direction:column;padding:12px;border-radius:20px;background:linear-gradient(160deg,#5b2bb5ee,#2f1a6fee);border:2px solid #2bffe0aa;box-shadow:0 0 30px #ff2bd644,0 12px 40px #0008}
+#bagPanel.open{display:flex}
+#bagPanel h3{margin:0 0 8px;color:var(--yel);font-size:18px;text-align:center}
+#bagWheel{flex:1;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;max-height:min(340px,58vh);padding:4px 2px;scrollbar-width:thin;scrollbar-color:#2bffe088 transparent}
+#bagWheel::-webkit-scrollbar{width:6px}#bagWheel::-webkit-scrollbar-thumb{background:#2bffe088;border-radius:4px}
+.bagItem{scroll-snap-align:center;display:flex;align-items:center;gap:10px;padding:12px 14px;margin:4px 0;border-radius:14px;background:#ffffff14;border:2px solid transparent;cursor:pointer;transition:border-color .15s,background .15s,transform .12s;user-select:none}
+.bagItem:hover,.bagItem.sel{border-color:var(--cy);background:#2bd6a433;transform:scale(1.03)}
+.bagItem .bi{font-size:26px;width:34px;text-align:center;flex-shrink:0}
+.bagItem .bt{font-size:14px;font-weight:600;color:#fff;line-height:1.2}
+.bagItem .bs{font-size:11px;color:#d6c9f7;margin-top:2px}
+.bagSec{font-size:11px;color:#a89ccc;padding:8px 6px 2px;text-transform:uppercase;letter-spacing:1px}
+#bagClose{margin-top:8px;width:100%;padding:8px;font-size:13px}
+body.touch #bagPanel{right:12px;left:12px;width:auto;top:auto;bottom:250px;transform:none;max-height:min(360px,48vh)}
 .panel{border-color:#2bffe0aa;box-shadow:0 0 40px #ff2bd655,0 15px 55px #0008}
 h1{background:linear-gradient(90deg,#2bffe0,#ff2bd6);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 10px #ff2bd6aa)}
 .glass{border-color:#2bffe066;box-shadow:0 0 12px #2bffe033,0 4px 14px #0004}
@@ -164,19 +200,168 @@ h1{background:linear-gradient(90deg,#2bffe0,#ff2bd6);-webkit-background-clip:tex
 <div id="help" class="glass"></div>
 </div>
 <div id="toolbar">
-<button id="btnShop" title="Mağaza">🛍️</button><button id="btnMap" title="Işınlan">🗺️</button><button id="btnEmote" title="Emojiler">😀</button><button id="btnChat" title="Sohbet">💬</button><button id="btnBuild" title="Ev yerleştir">🏠</button><button id="btnVoice" title="Sesli sohbet (M)">🎤</button><button id="btnFriends" title="Arkadaşlar">👥</button><button id="btnParts" title="Vücüt">💀</button><button id="btnFurn" class="hidden" title="Mobilya">🛋️</button><button id="btnMenu" class="secondary" title="Menü">⚙️</button>
+<button id="btnBag" title="Çanta">🎒</button>
+<button id="btnChat" title="Sohbet">💬</button>
+<button id="btnEmote" title="Emojiler">😀</button>
+<button id="btnVoice" title="Sesli sohbet (M)">🎤</button>
+<button id="btnFurn" class="hidden" title="Mobilya">🛋️</button>
+<button id="btnMenu" class="secondary" title="Menü">⚙️</button>
+</div>
+<div id="bagPanel" class="glass">
+  <h3>🎒 Çanta</h3>
+  <div id="bagWheel"></div>
+  <button id="bagClose" class="secondary">Kapat</button>
 </div>
 <div id="interact" class="hidden"><button id="interactBtn">E</button></div>
 <div id="chatBar" class="hidden"><input id="chatInput" maxlength="60" placeholder="Mesaj yaz…" autocomplete="off"><button id="chatSend">Gönder</button></div>
 <div id="emoteBar" class="glass hidden"></div>
 <div id="furnBar" class="glass hidden"><div id="furnItems"></div><div class="fbtns"><button id="furnRot" title="Döndür (R)">↻</button><button id="furnDel" class="secondary" title="Sil">🗑️</button><button id="furnDone">Bitti</button></div></div>
-<div id="mobileControls"><button data-key="KeyW">▲</button><span></span><span></span><button data-key="KeyA">◀</button><button data-key="KeyS">▼</button><button data-key="KeyD">▶</button><button data-key="Space">ZIPLA</button><button data-key="Dance">DANS</button></div><div id="lookHint">Kamerayı çevirmek için ekranı sürükle.</div>
+<div id="joystickContainer">
+  <div id="joystickInner"></div>
+</div>
+<div id="mobileButtonsRight">
+  <button id="mobileEmote" type="button" title="Emojiler / Dans">😀</button>
+  <button id="mobileRun" type="button" title="Koş (basılı tut)">KOŞ</button>
+  <button id="mobileJump" type="button" title="Zıpla">ZIPLA</button>
+</div>
+<div id="mobileControls"></div>
+<div id="lookHint">Kamerayı çevirmek için sağ tarafta ekranı sürükle</div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),root=$('game');
+let joystickActive=false,joystickX=0,joystickY=0,runToggle=false;
+const joystickContainer=document.getElementById('joystickContainer');
+const joystickInner=document.getElementById('joystickInner');
+const mobileButtonsRight=document.getElementById('mobileButtonsRight');
+const mobileJump=document.getElementById('mobileJump');
+const mobileRun=document.getElementById('mobileRun');
+const mobileEmote=document.getElementById('mobileEmote');
+
+function setupJoystick(){
+  const container=joystickContainer;
+  const inner=joystickInner;
+  let touchId=null,ptrId=null;
+
+  function onStart(clientX,clientY,id){
+    if(menuOpen||!started)return;
+    touchId=id;
+    joystickActive=true;
+    updateJoystickXY(clientX,clientY);
+  }
+  function onMove(clientX,clientY){
+    if(!joystickActive||menuOpen)return;
+    updateJoystickXY(clientX,clientY);
+  }
+  function onEnd(){
+    joystickActive=false;
+    joystickX=joystickY=0;
+    keys['KeyW']=keys['KeyS']=keys['KeyA']=keys['KeyD']=false;
+    inner.style.transform='translate(-50%,-50%)';
+    touchId=null;ptrId=null;
+  }
+  function updateJoystickXY(clientX,clientY){
+    const rect=container.getBoundingClientRect();
+    const centerX=rect.left+rect.width/2;
+    const centerY=rect.top+rect.height/2;
+    let dx=clientX-centerX;
+    let dy=clientY-centerY;
+    const dist=Math.hypot(dx,dy);
+    const maxDist=rect.width/2-35;
+    if(dist>maxDist){
+      const angle=Math.atan2(dy,dx);
+      dx=Math.cos(angle)*maxDist;
+      dy=Math.sin(angle)*maxDist;
+    }
+    joystickX=dx/maxDist;
+    joystickY=-dy/maxDist;
+    inner.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    keys['KeyW']=joystickY>0.25;
+    keys['KeyS']=joystickY<-0.25;
+    keys['KeyA']=joystickX<-0.25;
+    keys['KeyD']=joystickX>0.25;
+  }
+
+  container.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    if(menuOpen||!started)return;
+    const t=e.changedTouches[0];
+    onStart(t.clientX,t.clientY,t.identifier);
+  },{passive:false});
+  document.addEventListener('touchmove',e=>{
+    if(!joystickActive||menuOpen||touchId===null)return;
+    for(let t of e.touches){
+      if(t.identifier===touchId){onMove(t.clientX,t.clientY);break}
+    }
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    for(let t of e.changedTouches){
+      if(t.identifier===touchId){onEnd();break}
+    }
+  });
+  document.addEventListener('touchcancel',e=>{
+    for(let t of e.changedTouches){
+      if(t.identifier===touchId){onEnd();break}
+    }
+  });
+  // Mouse support for PC phone-controls mode
+  container.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch')return;
+    if(menuOpen||!started)return;
+    e.preventDefault();
+    ptrId=e.pointerId;
+    container.setPointerCapture(e.pointerId);
+    onStart(e.clientX,e.clientY,e.pointerId);
+  });
+  container.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch'||ptrId!==e.pointerId)return;
+    onMove(e.clientX,e.clientY);
+  });
+  container.addEventListener('pointerup',e=>{
+    if(e.pointerType==='touch'||ptrId!==e.pointerId)return;
+    onEnd();
+  });
+  container.addEventListener('pointercancel',e=>{
+    if(ptrId===e.pointerId)onEnd();
+  });
+}
+
+function bindHoldBtn(btn,down,up){
+  if(!btn)return;
+  const start=e=>{e.preventDefault();e.stopPropagation();down()};
+  const end=e=>{e.preventDefault();up()};
+  btn.addEventListener('touchstart',start,{passive:false});
+  btn.addEventListener('touchend',end,{passive:false});
+  btn.addEventListener('touchcancel',end,{passive:false});
+  btn.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;start(e)});
+  btn.addEventListener('pointerup',e=>{if(e.pointerType==='touch')return;end(e)});
+  btn.addEventListener('pointerleave',e=>{if(e.pointerType==='touch')return;end(e)});
+}
+
+bindHoldBtn(mobileJump,()=>{keys['Space']=true},()=>{keys['Space']=false});
+bindHoldBtn(mobileRun,()=>{
+  keys['ShiftLeft']=true;
+  runToggle=true;
+  if(mobileRun)mobileRun.classList.add('active');
+},()=>{
+  keys['ShiftLeft']=false;
+  runToggle=false;
+  if(mobileRun)mobileRun.classList.remove('active');
+});
+if(mobileEmote){
+  const openE=e=>{
+    e.preventDefault();e.stopPropagation();
+    if(!started||menuOpen)return;
+    $('emoteBar').classList.toggle('hidden');
+  };
+  mobileEmote.addEventListener('touchstart',openE,{passive:false});
+  mobileEmote.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;openE(e)});
+}
+
+setupJoystick();
+
 if(!window.THREE){$('stats').textContent='Three.js yüklenemedi. İnternet bağlantısını kontrol et.';return;}
 const MU=THREE.MathUtils;
 const SUPABASE_URL='https://kphdxpscsjbjtdtstlow.supabase.co';
@@ -704,22 +889,56 @@ function sfx(freq=250,dur=.08,type='triangle',slide){if(!audioCtx||!sfxGain)retu
 function sfxCoin(){sfx(988,.08);setTimeout(()=>sfx(1319,.16),70)}
 
 // ---------- UI ----------
-const PANELS=['settings','loginPanel','avatarPanel','buildPanel','shopPanel','mapPanel'];
+const PANELS=['settings','loginPanel','avatarPanel','buildPanel','shopPanel','mapPanel','friendsPanel','bodyPartsPanel'];
 function showHelp(){const touch=document.body.classList.contains('touch');$('help').textContent=insideHouse?'İçeridesin · WASD: Hareket · ESC: Menü':buildMode?'Boş parsele tıkla: ev yerleştir · B: bitir':'WASD: Hareket · Shift: Koş · Space: Zıpla · E: Etkileşim · V: Dans · Enter: Sohbet · 1-7: Emoji · M: Ses · ESC: Menü'}
-function updateControlUI(){const show=controlMode!=='pc'||$('phoneControls').checked;$('mobileControls').style.display=show?'grid':'none';$('lookHint').style.display=show?'block':'none';document.body.classList.toggle('touch',show);showHelp()}
+function updateControlUI(){const show=controlMode!=='pc'||$('phoneControls').checked;$('lookHint').style.display=show?'block':'none';if(joystickContainer)joystickContainer.style.display=show?'block':'none';if(mobileButtonsRight)mobileButtonsRight.style.display=show?'flex':'none';document.body.classList.toggle('touch',show);showHelp()}
 document.querySelectorAll('[data-mode]').forEach(el=>el.onclick=()=>{controlMode=el.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('selected',x===el))});
 $('continueControls').onclick=()=>{$('controlsScreen').classList.add('hidden');$('mainMenu').classList.remove('hidden');$('phoneControls').checked=controlMode!=='pc';updateControlUI()};
 
 let fromMenu=false;
-function openPanel(id){fromMenu=!$('mainMenu').classList.contains('hidden');menuOpen=true;PANELS.forEach(k=>$(k).classList.add('hidden'));$(id).classList.remove('hidden');dragging=false;for(const k in keys)keys[k]=false;$('emoteBar').classList.add('hidden');if(id==='shopPanel')renderShop();if(id==='mapPanel')renderMap()}
-function closeAll(){PANELS.forEach(k=>$(k).classList.add('hidden'));$('mainMenu').classList.add('hidden');menuOpen=false;fromMenu=false;updateControlUI()}
-function closePanels(){PANELS.forEach(k=>$(k).classList.add('hidden'));if(fromMenu||!started){$('mainMenu').classList.remove('hidden');menuOpen=!started?false:true;fromMenu=false}else{menuOpen=false;$('mainMenu').classList.add('hidden')}}
+function openPanel(id){fromMenu=!$('mainMenu').classList.contains('hidden');menuOpen=true;closeBag();PANELS.forEach(k=>$(k).classList.add('hidden'));$(id).classList.remove('hidden');dragging=false;for(const k in keys)keys[k]=false;$('emoteBar').classList.add('hidden');if(id==='shopPanel')renderShop();if(id==='mapPanel')renderMap()}
+function closeAll(){closeBag();PANELS.forEach(k=>$(k).classList.add('hidden'));$('mainMenu').classList.add('hidden');menuOpen=false;fromMenu=false;updateControlUI()}
+function closePanels(){closeBag();PANELS.forEach(k=>$(k).classList.add('hidden'));if(fromMenu||!started){$('mainMenu').classList.remove('hidden');menuOpen=!started?false:true;fromMenu=false}else{menuOpen=false;$('mainMenu').classList.add('hidden')}}
+document.addEventListener('click',e=>{if(e.target.classList.contains('closeOverlay')){closePanels()}});
+document.addEventListener('keydown',e=>{if(e.code==='Escape'&&menuOpen){closePanels()}});
 function openMainMenu(){PANELS.forEach(k=>$(k).classList.add('hidden'));$('resumeGame').classList.toggle('hidden',!started);$('mainMenu').classList.remove('hidden');menuOpen=true;dragging=false;for(const k in keys)keys[k]=false;$('emoteBar').classList.add('hidden')}
 $('openSettings').onclick=()=>openPanel('settings');$('openLogin').onclick=()=>openPanel('loginPanel');$('openAvatar').onclick=()=>openPanel('avatarPanel');$('openBuild').onclick=()=>openPanel('buildPanel');
 $('resume').onclick=()=>{closePanels();updateControlUI()};document.querySelectorAll('.closeOverlay').forEach(b=>b.onclick=()=>{closePanels();updateControlUI()});
-function toggleMenu(){if(!started)return;if(!$('chatBar').classList.contains('hidden')){closeChat();return}if(!$('emoteBar').classList.contains('hidden')){$('emoteBar').classList.add('hidden');return}if(menuOpen)closeAll();else openMainMenu()}
-$('btnShop').onclick=()=>{if(started)openPanel('shopPanel')};$('btnMap').onclick=()=>{if(started)openPanel('mapPanel')};$('btnMenu').onclick=toggleMenu;$('btnBuild').onclick=()=>{if(started)openPanel('buildPanel')};
-$('btnEmote').onclick=()=>{if(started&&!menuOpen)$('emoteBar').classList.toggle('hidden')};$('btnChat').onclick=()=>{if(started&&!menuOpen)openChat()};
+function toggleMenu(){if(!started)return;if(bagOpen){closeBag();return}if(!$('chatBar').classList.contains('hidden')){closeChat();return}if(!$('emoteBar').classList.contains('hidden')){$('emoteBar').classList.add('hidden');return}if(menuOpen)closeAll();else openMainMenu()}
+$('btnMenu').onclick=toggleMenu;
+$('btnEmote').onclick=()=>{if(started&&!menuOpen){closeBag();$('emoteBar').classList.toggle('hidden')}};$('btnChat').onclick=()=>{if(started&&!menuOpen){closeBag();openChat()}};
+// ----- bag menu -----
+const BAG_ACTIONS=[
+  {sec:'Hızlı'},
+  {id:'shop',e:'🛍️',t:'Mağaza',s:'Kıyafet ve eşya al',act:()=>openPanel('shopPanel')},
+  {id:'build',e:'🏠',t:'Ev yerleştir',s:'Parsel seç, ev kur',act:()=>openPanel('buildPanel')},
+  {id:'friends',e:'👥',t:'Arkadaşlar',s:'Kod ile ekle',act:()=>openPanel('friendsPanel')},
+  {id:'parts',e:'💀',t:'Vücut parçaları',s:'Parça gizle/göster',act:()=>openPanel('bodyPartsPanel')},
+  {id:'avatar',e:'🎨',t:'Karakterim',s:'Renk ve isim',act:()=>openPanel('avatarPanel')},
+  {id:'settings',e:'⚙️',t:'Ayarlar',s:'Grafik, ses, kontroller',act:()=>openPanel('settings')},
+  {sec:'Işınlan'},
+];
+let bagOpen=false,bagSel=0,bagItems=[];
+function closeBag(){bagOpen=false;const p=$('bagPanel');if(p)p.classList.remove('open')}
+function openBag(){if(!started||menuOpen)return;$('emoteBar').classList.add('hidden');closeChat();renderBag();bagOpen=true;$('bagPanel').classList.add('open');bagSel=0;updateBagSel()}
+function toggleBag(){if(bagOpen)closeBag();else openBag()}
+function renderBag(){
+  const places=PLACES.map((p,i)=>({id:'tp'+i,e:p[0].split(' ')[0],t:p[0].replace(/^[^\s]+\s/,''),s:'Işınlan',act:()=>doTeleport(i)}));
+  bagItems=BAG_ACTIONS.filter(x=>!x.sec).concat(places);
+  let html='';BAG_ACTIONS.forEach(x=>{if(x.sec){html+=`<div class="bagSec">${x.sec}</div>`}else{html+=`<div class="bagItem" data-id="${x.id}"><span class="bi">${x.e}</span><div><div class="bt">${x.t}</div><div class="bs">${x.s||''}</div></div></div>`}});
+  html+=`<div class="bagSec">Işınlan</div>`;
+  places.forEach(x=>{html+=`<div class="bagItem" data-id="${x.id}"><span class="bi">${x.e}</span><div><div class="bt">${x.t}</div><div class="bs">${x.s}</div></div></div>`});
+  $('bagWheel').innerHTML=html;
+  $('bagWheel').querySelectorAll('.bagItem').forEach(el=>{el.onclick=()=>{const id=el.dataset.id;const it=bagItems.find(a=>a.id===id);if(it){closeBag();it.act()}}});
+}
+function updateBagSel(){const els=$('bagWheel').querySelectorAll('.bagItem');els.forEach((el,i)=>el.classList.toggle('sel',i===bagSel));if(els[bagSel])els[bagSel].scrollIntoView({block:'nearest',behavior:'smooth'})}
+function bagWheelMove(dir){if(!bagOpen||!bagItems.length)return;bagSel=(bagSel+dir+bagItems.length)%bagItems.length;updateBagSel()}
+function bagConfirm(){if(!bagOpen||!bagItems[bagSel])return;const it=bagItems[bagSel];closeBag();it.act()}
+function doTeleport(i){const p=PLACES[i];if(!p)return;me.root.position.set(p[1],p[2],p[3]);P.vy=0;if(me.pet)me.pet.position.set(p[1],p[2],p[3]-2);closePanels();closeBag();updateControlUI();sfx(700,.2,'sine',1400);toast(p[0])}
+$('btnBag').onclick=()=>{if(started)toggleBag()};
+$('bagClose').onclick=closeBag;
+$('bagWheel').addEventListener('wheel',e=>{if(!bagOpen)return;e.preventDefault();bagWheelMove(e.deltaY>0?1:-1)},{passive:false});
+addEventListener('keydown',e=>{if(!bagOpen)return;if(e.code==='ArrowDown'||e.code==='KeyS'){e.preventDefault();bagWheelMove(1)}else if(e.code==='ArrowUp'||e.code==='KeyW'){e.preventDefault();bagWheelMove(-1)}else if(e.code==='Enter'||e.code==='Space'){e.preventDefault();bagConfirm()}else if(e.code==='Escape'){closeBag()}});
 $('emoteBar').innerHTML=Object.keys(EMO).map(k=>`<button data-emo="${k}" title="${EMO[k].n}">${EMO[k].e}</button>`).join('');
 $('emoteBar').addEventListener('click',e=>{const b=e.target.closest('[data-emo]');if(b){doEmote(b.dataset.emo);$('emoteBar').classList.add('hidden')}});
 function doEmote(id){if(!started||menuOpen||!EMO[id])return;if(me.emote===id){me.emote=null;return}me.emote=id;me.emoteStart=performance.now();me.nextFloat=0;if(id==='flip'&&P.onGround){P.vy=8;P.onGround=false}sfx(520,.12)}
@@ -760,8 +979,7 @@ $('phoneControls').onchange=updateControlUI;
 ['quality','bvRTX','sunShadows','viewDistance','timeMode'].forEach(id=>$(id).addEventListener('change',applySettings));
 $('defaults').onclick=()=>{$('quality').value='medium';$('bvRTX').checked=false;$('sunShadows').checked=true;$('timeMode').value='auto';$('musicTrack').value='auto';trackSel='auto';$('viewDistance').value='160';$('phoneControls').checked=controlMode!=='pc';$('musicVolume').value=25;$('sfxVolume').value=60;applySettings();updateControlUI()};
 // friends & body parts listeners
-$('btnFriends').onclick=()=>openPanel('friendsPanel');
-$('btnParts').onclick=()=>openPanel('bodyPartsPanel');
+
 $('copyMyCode').onclick=()=>{const code=myId().slice(0,6).toUpperCase();navigator.clipboard.writeText(code);toast('Kod kopyalandı: '+code)};
 const bodyPartsGrid=$('bodyPartsGrid');if(bodyPartsGrid)bodyPartsGrid.addEventListener('click',e=>{const item=e.target.closest('.item');if(!item)return;const part=item.dataset.part;if(hiddenParts.has(part)){hiddenParts.delete(part);item.classList.remove('eq')}else{hiddenParts.add(part);item.classList.add('eq')}profile.hiddenParts=Object.fromEntries([...hiddenParts].map(p=>[p,true]));me.setLook(profileLook());lookDirty=true;markDirty()});
 $('resetBody').onclick=()=>{hiddenParts.clear();profile.hiddenParts={};document.querySelectorAll('#bodyPartsGrid .item').forEach(x=>x.classList.remove('eq'));me.setLook(profileLook());lookDirty=true;markDirty()};
@@ -776,7 +994,8 @@ function renderStatsText(f){$('stats').innerHTML='Grafik: '+(rtx?'BlockVerseRTX'
 // ---------- rooms / voice / furniture UI ----------
 function enterGame(code){const newCode=code||null,same=started&&channel&&roomCode===newCode;roomCode=newCode;if(!started){started=true;startAudio()}
  PANELS.forEach(k=>$(k).classList.add('hidden'));$('mainMenu').classList.add('hidden');menuOpen=false;fromMenu=false;$('resumeGame').classList.remove('hidden');updateControlUI();updateOnline();
- if(!same)connectMultiplayer();toast(newCode?'🔒 Oda kodu: '+newCode+' · arkadaşlarına ver':'🌍 Herkese açık sunucudasın')}
+ if(!same)connectMultiplayer();toast(newCode?'🔒 Oda kodu: '+newCode+' · arkadaşlarına ver':'🌍 Herkese açık sunucudasın');
+ setTimeout(()=>{if($('lookHint'))$('lookHint').style.display='none'},5000)}
 $('startGame').onclick=()=>enterGame(null);
 $('resumeGame').onclick=()=>closeAll();
 $('createRoom').onclick=()=>{const al='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let c='';for(let i=0;i<5;i++)c+=al[Math.floor(Math.random()*al.length)];try{navigator.clipboard.writeText(c)}catch(e){}enterGame(c)};
@@ -817,7 +1036,7 @@ addEventListener('keydown',e=>{const tag=e.target.tagName;if(tag==='INPUT'||tag=
 addEventListener('keyup',e=>keys[e.code]=false);addEventListener('blur',()=>{for(const k in keys)keys[k]=false;dragging=false});
 const cv=renderer.domElement;
 cv.addEventListener('pointerdown',e=>{if(!started||menuOpen)return;$('emoteBar').classList.add('hidden');if(buildMode){updateGhost(e.clientX,e.clientY);placeHouseAt(e.clientX,e.clientY);return}dragging=true;lastX=e.clientX;lastY=e.clientY});
-cv.addEventListener('pointermove',e=>{if(buildMode&&started&&!menuOpen)updateGhost(e.clientX,e.clientY);if(furnMode&&!menuOpen)furnHover(e.clientX,e.clientY);if(!dragging)return;yaw-=(e.clientX-lastX)*.005;pitch=MU.clamp(pitch+(e.clientY-lastY)*.004,-.1,.95);lastX=e.clientX;lastY=e.clientY});
+cv.addEventListener('pointermove',e=>{if(buildMode&&started&&!menuOpen)updateGhost(e.clientX,e.clientY);if(furnMode&&!menuOpen)furnHover(e.clientX,e.clientY);if(!dragging)return;const sens=document.body.classList.contains('touch')?.008:.005;yaw-=(e.clientX-lastX)*sens;pitch=MU.clamp(pitch+(e.clientY-lastY)*sens*.8,-.1,.95);lastX=e.clientX;lastY=e.clientY});
 let downX=0,downY=0;
 cv.addEventListener('pointerdown',e=>{downX=e.clientX;downY=e.clientY});
 function pickInteract(px,py){ray.setFromCamera(new THREE.Vector2(px/innerWidth*2-1,-py/innerHeight*2+1),camera);for(const it of interactables){if(!it.obj||!it.obj.visible)continue;if(ray.intersectObject(it.obj,true).length)return it}return null}
@@ -825,7 +1044,6 @@ cv.addEventListener('pointerup',e=>{if(!started||menuOpen||buildMode)return;if(M
 cv.addEventListener('pointermove',e=>{if(!started||menuOpen||buildMode||dragging||e.pointerType==='touch')return;cv.style.cursor=pickInteract(e.clientX,e.clientY)?'pointer':'default'});
 addEventListener('pointerup',()=>dragging=false);
 cv.addEventListener('wheel',e=>{camDist=MU.clamp(camDist+e.deltaY*.01,4,14)},{passive:true});
-document.querySelectorAll('#mobileControls button').forEach(b=>{const code=b.dataset.key;if(code==='Dance'){b.addEventListener('pointerdown',e=>{e.preventDefault();doEmote('dance')});return}b.addEventListener('pointerdown',e=>{e.preventDefault();keys[code]=true});for(const ev of['pointerup','pointercancel','pointerleave'])b.addEventListener(ev,()=>keys[code]=false)});
 // building placement
 const ghost=new THREE.Mesh(cube,new THREE.MeshBasicMaterial({color:0x44ff88,transparent:true,opacity:.4,depthWrite:false}));ghost.visible=false;scene.add(ghost);
 const ray=new THREE.Raycaster(),gPlane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
